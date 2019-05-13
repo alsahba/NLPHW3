@@ -60,7 +60,9 @@ class DocumentClassification(object):
         y_train, X_train = self.vec_for_learning(model_dbow, tagged_train_data)
         y_test, X_test = self.vec_for_learning(model_dbow, tagged_test_data)
 
+        # logreg = LogisticRegression(n_jobs=self.cores, solver='lbfgs')
         logreg = LogisticRegression(n_jobs=5, solver='lbfgs')
+
         logreg.fit(X_train, y_train)
         y_pred = logreg.predict(X_test)
 
