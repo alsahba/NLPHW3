@@ -7,7 +7,7 @@ from gensim.models import KeyedVectors
 # Class of first task.
 class Analogy(object):
     # Word2vec model loaded from google's pretrained word vectors.
-    word2vec_model = KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True, limit=200000)
+    word2vec_model = KeyedVectors.load_word2vec_format('GoogleNews-vectors-negative300.bin', binary=True)
     # All word vectors' magnitudes calculated with help of numpy library.
     vector_magnitudes = np.apply_along_axis(np.linalg.norm, 1, word2vec_model.vectors)
 
@@ -51,26 +51,23 @@ class Analogy(object):
     def findAnalogy(self):
         analogy_test_lines = self.organizeAnalogyTestFile()
         correct_predict, percentage_count = 0, 0
-        # todo try excepti kaldir
+
         for test_words in analogy_test_lines:
-            try:
-                test_vector = self.word2vec_model[test_words[2]] + self.word2vec_model[test_words[1]] \
+
+            test_vector = self.word2vec_model[test_words[2]] + self.word2vec_model[test_words[1]] \
                               - self.word2vec_model[test_words[0]]
-                similarity_calculations = self.calcCosineSimilarity(test_vector)
-                predicted_word = self.word2vec_model.index2word[np.argmax(similarity_calculations)]
+            similarity_calculations = self.calcCosineSimilarity(test_vector)
+            predicted_word = self.word2vec_model.index2word[np.argmax(similarity_calculations)]
 
-                #Checking of prediction with respect to test_words.
-                if ((predicted_word == test_words[0]) or (predicted_word == test_words[1]) or (
-                        predicted_word == test_words[2])):
-                    sorted_array = np.sort(similarity_calculations, 0)[::-1]
-                    predicted_word = self.analogyCorrecter(test_words, similarity_calculations, sorted_array, 1)
+            #Checking of prediction with respect to test_words.
+            if ((predicted_word == test_words[0]) or (predicted_word == test_words[1]) or (
+                    predicted_word == test_words[2])):
+                sorted_array = np.sort(similarity_calculations, 0)[::-1]
+                predicted_word = self.analogyCorrecter(test_words, similarity_calculations, sorted_array, 1)
 
-                if predicted_word == test_words[3]:
-                    correct_predict += 1
-                percentage_count += 1
-            except:
-                percentage_count += 1
-                continue
+            if predicted_word == test_words[3]:
+                correct_predict += 1
+            percentage_count += 1
 
             sys.stdout.write("\r%s%d%%" % (
                 "Analogy test lines are processing...\t", ((percentage_count / len(analogy_test_lines)) * 100)))

@@ -32,8 +32,8 @@ class DocumentClassification(object):
 
     # Sentences and their tags divided from tagged documents and returned.
     def vec_for_learning(self, model, documents):
-        targets, sentences = zip(*[(doc.tags[0], model.infer_vector(doc.words, steps=20)) for doc in documents])
-        return targets, sentences
+        tags, sentences = zip(*[(doc.tags[0], model.infer_vector(doc.words, steps=20)) for doc in documents])
+        return tags, sentences
 
     # Train data and test data created with respect to train/test slices of data frame.
     # Model of doc2vec is created. And vocabulary created.
@@ -59,7 +59,6 @@ class DocumentClassification(object):
 
         y_train, X_train = self.vec_for_learning(model_dbow, tagged_train_data)
         y_test, X_test = self.vec_for_learning(model_dbow, tagged_test_data)
-
         # logreg = LogisticRegression(n_jobs=self.cores, solver='lbfgs')
         logreg = LogisticRegression(n_jobs=5, solver='lbfgs')
 
